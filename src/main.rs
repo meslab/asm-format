@@ -1,6 +1,5 @@
 use std::env;
 use std::fs;
-use regex::Regex;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -28,21 +27,24 @@ fn main() {
 
 fn format_assembly(input: &str) -> String {
     let mut formatted_lines = Vec::new();
-    let re_spaces = Regex::new(r" {4}").unwrap();
-    let re_spaces_words = Regex::new(r"([^\s,]+) +").unwrap();
 
     for line in input.lines() {
-        let line = re_spaces.replace_all(&line, "\t");
-        let line = re_spaces_words.replace_all(&line, |caps: &regex::Captures| {
-            let first_word = caps.get(1).unwrap().as_str();
-            if first_word.ends_with(',') && caps[0].contains(',') {
-                caps[0].to_string()
-            } else {
-                format!("{}\t", first_word)
-            }
-        });
-        formatted_lines.push(line.to_string());
+        let prefix = match starts_with_whitespace(&line) {
+            true => "    ",
+            false => "",
+        };
+        let first_word = line.trim().split_whitespace().next().unwrap_or("");
+        let remaining_part = line.trim().split_whitespace().skip(1).collect::<Vec<&str>>().join(" ");
+
+        match remaining_part.trim().is_empty() {
+            true => formatted_lines.push(format!("{}{}", prefix, first_word)),
+            false => formatted_lines.push(format!("{}{:<7} {}", prefix, first_word, remaining_part)),
+        }
     }
 
     formatted_lines.join("\n")
+}
+
+fn starts_with_whitespace(line: &str) -> bool {
+    !line.is_empty() && line.chars().next().unwrap().is_whitespace()
 }
