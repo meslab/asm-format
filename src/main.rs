@@ -38,7 +38,7 @@ fn format_assembly(input: &str) -> String {
 
         match remaining_part.trim().is_empty() {
             true => formatted_lines.push(format!("{}{}", prefix, first_word)),
-            false => formatted_lines.push(format!("{}{:<8}{}", prefix, first_word, remaining_part)),
+            false => formatted_lines.push(format!("{}{:<7} {}", prefix, first_word, remaining_part)),
         }
     }
 
