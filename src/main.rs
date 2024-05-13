@@ -26,41 +26,41 @@ fn main() {
 }
 
 fn format_assembly(input: &str) -> String {
-    let mut formatted_lines = Vec::new();
+    input
+        .lines()
+        .map(|line| {
+            let prefix = match starts_with_whitespace(&line) {
+                true => "    ",
+                false => "",
+            };
+            let first_word = line.trim().split_whitespace().next().unwrap_or_default();
+            let remaining_part = line
+                .trim()
+                .split_whitespace()
+                .skip(1)
+                .collect::<Vec<&str>>()
+                .join(" ");
 
-    for line in input.lines() {
-        let prefix = match starts_with_whitespace(&line) {
-            true => "    ",
-            false => "",
-        };
-        let first_word = line.trim().split_whitespace().next().unwrap_or("");
-        let remaining_part = line
-            .trim()
-            .split_whitespace()
-            .skip(1)
-            .collect::<Vec<&str>>()
-            .join(" ");
-
-        match remaining_part.trim().is_empty() {
-            true => formatted_lines.push(format!("{}{}", prefix, first_word)),
-            false => {
-                if prefix.is_empty()
-                    && first_word
-                        .trim_start_matches('_')
-                        .chars()
-                        .next()
-                        .expect("No first word!")
-                        .is_uppercase()
-                {
-                    formatted_lines.push(format!("{}{:<11} {}", prefix, first_word, remaining_part))
-                } else {
-                    formatted_lines.push(format!("{}{:<7} {}", prefix, first_word, remaining_part))
+            match remaining_part.trim().is_empty() {
+                true => format!("{}{}", prefix, first_word),
+                false => {
+                    if prefix.is_empty()
+                        && first_word
+                            .trim_start_matches('_')
+                            .chars()
+                            .next()
+                            .expect("No first word!")
+                            .is_uppercase()
+                    {
+                        format!("{}{:<11} {}", prefix, first_word, remaining_part)
+                    } else {
+                        format!("{}{:<7} {}", prefix, first_word, remaining_part)
+                    }
                 }
             }
-        }
-    }
-
-    formatted_lines.join("\n")
+        })
+        .collect::<Vec<String>>()
+        .join("\n")
 }
 
 fn starts_with_whitespace(line: &str) -> bool {
