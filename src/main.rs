@@ -52,7 +52,7 @@ fn format_assembly(input: &str) -> String {
                         .expect("No first word!")
                         .is_uppercase()
                 {
-                    formatted_lines.push(format!("{}{:<12} {}", prefix, first_word, remaining_part))
+                    formatted_lines.push(format!("{}{:<11} {}", prefix, first_word, remaining_part))
                 } else {
                     formatted_lines.push(format!("{}{:<7} {}", prefix, first_word, remaining_part))
                 }
