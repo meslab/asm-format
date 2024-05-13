@@ -34,11 +34,29 @@ fn format_assembly(input: &str) -> String {
             false => "",
         };
         let first_word = line.trim().split_whitespace().next().unwrap_or("");
-        let remaining_part = line.trim().split_whitespace().skip(1).collect::<Vec<&str>>().join(" ");
+        let remaining_part = line
+            .trim()
+            .split_whitespace()
+            .skip(1)
+            .collect::<Vec<&str>>()
+            .join(" ");
 
         match remaining_part.trim().is_empty() {
             true => formatted_lines.push(format!("{}{}", prefix, first_word)),
-            false => formatted_lines.push(format!("{}{:<7} {}", prefix, first_word, remaining_part)),
+            false => {
+                if prefix.is_empty()
+                    && first_word
+                        .trim_start_matches('_')
+                        .chars()
+                        .next()
+                        .expect("No first word!")
+                        .is_uppercase()
+                {
+                    formatted_lines.push(format!("{}{:<12} {}", prefix, first_word, remaining_part))
+                } else {
+                    formatted_lines.push(format!("{}{:<7} {}", prefix, first_word, remaining_part))
+                }
+            }
         }
     }
 
