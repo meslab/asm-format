@@ -8,6 +8,8 @@ rust-version:
 format:
 	cargo fmt
 
+fmt: format
+
 lint:
 	cargo clippy
 
