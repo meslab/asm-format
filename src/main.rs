@@ -28,9 +28,8 @@ fn main() {
 fn format_assembly(input: &str) -> String {
     input
         .lines()
-        .map(|line| line.trim())
-        .map(|line| match is_comment(line) {
-            true => line.to_string(),
+        .map(|line| match is_comment(line.trim()) {
+            true => line.trim().to_string(),
             false => {
                 let prefix = match starts_with_whitespace(line) {
                     true => "    ",
