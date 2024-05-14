@@ -28,33 +28,35 @@ fn main() {
 fn format_assembly(input: &str) -> String {
     input
         .lines()
-        .map(|line| {
-            let prefix = match starts_with_whitespace(&line) {
-                true => "    ",
-                false => "",
-            };
-            let first_word = line.trim().split_whitespace().next().unwrap_or_default();
-            let remaining_part = line
-                .trim()
-                .split_whitespace()
-                .skip(1)
-                .collect::<Vec<&str>>()
-                .join(" ");
+        .map(|line| match is_comment(line) {
+            true => line.to_string(),
+            false => {
+                let prefix = match starts_with_whitespace(line) {
+                    true => "    ",
+                    false => "",
+                };
+                let first_word = line.split_whitespace().next().unwrap_or_default();
+                let remaining_part = line
+                    .split_whitespace()
+                    .skip(1)
+                    .collect::<Vec<&str>>()
+                    .join(" ");
 
-            match remaining_part.trim().is_empty() {
-                true => format!("{}{}", prefix, first_word),
-                false => {
-                    if prefix.is_empty()
-                        && first_word
-                            .trim_start_matches('_')
-                            .chars()
-                            .next()
-                            .expect("No first word!")
-                            .is_uppercase()
-                    {
-                        format!("{}{:<11} {}", prefix, first_word, remaining_part)
-                    } else {
-                        format!("{}{:<7} {}", prefix, first_word, remaining_part)
+                match remaining_part.trim().is_empty() {
+                    true => format!("{}{}", prefix, first_word),
+                    false => {
+                        if prefix.is_empty()
+                            && first_word
+                                .trim_start_matches('_')
+                                .chars()
+                                .next()
+                                .expect("No first word!")
+                                .is_uppercase()
+                        {
+                            format!("{}{:<11} {}", prefix, first_word, remaining_part)
+                        } else {
+                            format!("{}{:<7} {}", prefix, first_word, remaining_part)
+                        }
                     }
                 }
             }
@@ -65,4 +67,8 @@ fn format_assembly(input: &str) -> String {
 
 fn starts_with_whitespace(line: &str) -> bool {
     !line.is_empty() && line.chars().next().unwrap().is_whitespace()
+}
+
+fn is_comment(line: &str) -> bool {
+    line.trim().starts_with(';') || line.trim().starts_with('#')
 }
