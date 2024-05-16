@@ -32,3 +32,5 @@ clean:
 
 uninstall: clean
 	rm -f ~/.local/bin/asm-format
+
+.PHONY: rust-version format fmt lint test run release install clean uninstall
